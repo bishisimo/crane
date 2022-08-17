@@ -1,38 +1,13 @@
-package ui
+package list
 
-import (
-	"context"
-	ui "github.com/gizak/termui/v3"
-	"github.com/gizak/termui/v3/widgets"
-)
+import ui "github.com/gizak/termui/v3"
 
-type List struct {
-	*widgets.List
-	ctx    context.Context
-	cancel context.CancelFunc
-}
-
-func NewList() *List {
-	l := widgets.NewList()
-	l.Title = "Meta"
-	l.TextStyle = ui.NewStyle(ui.ColorClear)
-	l.WrapText = false
-	l.SetRect(0, 0, 100, 12)
-	l.SelectedRowStyle = ui.NewStyle(ui.ColorCyan)
-	ctx, cancel := context.WithCancel(context.Background())
-	return &List{
-		List:   l,
-		ctx:    ctx,
-		cancel: cancel,
-	}
-}
-
-func (l List) Show(data chan []string) error {
+func (l *List) Show(data chan []string) error {
 	if err := ui.Init(); err != nil {
 		return err
 	}
 	defer ui.Close()
-	go l.controller()
+	go l.showController()
 	for {
 		select {
 		case <-l.ctx.Done():
@@ -44,7 +19,7 @@ func (l List) Show(data chan []string) error {
 	}
 }
 
-func (l List) controller() {
+func (l *List) showController() {
 	previousKey := ""
 	go func() {
 		uiEvents := ui.PollEvents()

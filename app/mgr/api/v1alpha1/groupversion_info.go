@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 // Package v1 contains API Schema definitions for the mgr v1 API group
-//+kubebuilder:object:generate=true
-//+groupName=mgr.my.domain
+// +kubebuilder:object:generate=true
+// +groupName=mgr.my.domain
 package v1alpha1
 
 import (
@@ -34,3 +34,18 @@ var (
 	// AddToScheme adds the types in this group-version to the given scheme.
 	AddToScheme = SchemeBuilder.AddToScheme
 )
+
+func init() {
+	SchemeBuilder.Register(
+		&MySQLCluster{},
+		&MySQLClusterList{},
+		&MySQLBackup{},
+		&MySQLBackupList{},
+		&MySQLRestore{},
+		&MySQLRestoreList{},
+		&MySQLMeta{},
+		&MySQLMetaList{},
+		&MySQLSchedule{},
+		&MySQLScheduleList{},
+	)
+}

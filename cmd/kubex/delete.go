@@ -1,16 +1,16 @@
 /*
 Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
 */
 package kubex
 
 import (
 	"crane/app/kubex"
+	"crane/pkg/errorx"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
-// etcdCmd represents the etcd command
+// deleteCmd represents the etcd command
 var deleteCmd = &cobra.Command{
 	Use:     "delete",
 	Aliases: []string{"remove", "rm"},
@@ -29,12 +29,15 @@ var deleteCmd = &cobra.Command{
 		k := kubex.NewWorker(kubexOptions)
 		err := k.Delete()
 		if err != nil {
-			log.Fatal().Err(err).Msg("fail")
+			if errorx.IsNotFound(err) {
+				log.Warn().Str("Kind", kubexOptions.Kind).Msg(err.Error())
+			} else {
+				log.Fatal().Err(err).Msg("fail")
+			}
 		}
 	},
 }
 
 func init() {
 	kubexCmd.AddCommand(deleteCmd)
-	deleteCmd.Flags().AddFlagSet(kubexCmd.Flags())
 }

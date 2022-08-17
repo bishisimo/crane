@@ -2,10 +2,11 @@ package show
 
 import (
 	"context"
-	"crane/app/mgr/api/v1"
+	mgrv1a1 "crane/app/mgr/api/v1alpha1"
 	"crane/app/mgr/common"
 	"crane/app/mgr/controller/meta"
 	"crane/pkg/ui"
+	"crane/pkg/ui/list"
 	"fmt"
 	"k8s.io/apimachinery/pkg/types"
 )
@@ -16,13 +17,13 @@ type MetaShowOptions struct {
 
 type MetaShow struct {
 	Options        *MetaShowOptions
-	RawChan        chan *v1.MySQLMeta
+	RawChan        chan *mgrv1a1.MySQLMeta
 	loadingContext context.Context
 	loadingCancel  context.CancelFunc
 }
 
 func NewMetaShow(options *MetaShowOptions) *MetaShow {
-	c := make(chan *v1.MySQLMeta, 1)
+	c := make(chan *mgrv1a1.MySQLMeta, 1)
 	ctx, cancel := context.WithCancel(context.Background())
 	return &MetaShow{
 		Options:        options,
@@ -64,7 +65,7 @@ func (s MetaShow) List() error {
 	dataChan := make(chan []string, 1)
 	go s.parseBackupInfo(dataChan)
 	<-s.loadingContext.Done()
-	list := ui.NewList()
+	list := list.NewList("Meta")
 	return list.Show(dataChan)
 }
 
@@ -74,7 +75,7 @@ func (s MetaShow) parseBackupInfo(dataChan chan []string) {
 		rows := make([]string, 0, len(status.BackupInfos))
 		for i, info := range status.BackupInfos {
 			t := "^"
-			if info.Spec.Type == v1.TypeOfBackupFull {
+			if info.Spec.Type == mgrv1a1.TypeOfBackupFull {
 				t = "#"
 			}
 			state := ""

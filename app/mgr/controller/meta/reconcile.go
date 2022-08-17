@@ -2,7 +2,7 @@ package meta
 
 import (
 	"context"
-	mgrv1b1 "crane/app/mgr/api/v1"
+	mgrv1a1 "crane/app/mgr/api/v1alpha1"
 	"crane/app/mgr/common"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -15,11 +15,11 @@ import (
 type Reconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
-	Chan   chan *mgrv1b1.MySQLMeta
+	Chan   chan *mgrv1a1.MySQLMeta
 	Key    client.ObjectKey
 }
 
-func NewMetaReconciler(c chan *mgrv1b1.MySQLMeta, key client.ObjectKey) *Reconciler {
+func NewMetaReconciler(c chan *mgrv1a1.MySQLMeta, key client.ObjectKey) *Reconciler {
 	mgr := common.GetManger()
 	return &Reconciler{
 		Client: mgr.GetClient(),
@@ -39,7 +39,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		return ctrl.Result{}, nil
 	}
 	// prepare
-	metaCr := new(mgrv1b1.MySQLMeta)
+	metaCr := new(mgrv1a1.MySQLMeta)
 	err := r.Client.Get(ctx, req.NamespacedName, metaCr)
 	if apierrors.IsNotFound(err) {
 		logger.Info("api-resource loss, do nothing")
@@ -56,7 +56,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 func (r *Reconciler) SetupWithManager() error {
 	mgr := common.GetManger()
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&mgrv1b1.MySQLMeta{}).
+		For(&mgrv1a1.MySQLMeta{}).
 		Complete(r)
 }
 
@@ -70,7 +70,7 @@ func (r *Reconciler) FilterByTypes(req ctrl.Request) bool {
 	return true
 }
 
-func (r *Reconciler) Send(metaCr *mgrv1b1.MySQLMeta) {
+func (r *Reconciler) Send(metaCr *mgrv1a1.MySQLMeta) {
 	select {
 	case r.Chan <- metaCr:
 	default:

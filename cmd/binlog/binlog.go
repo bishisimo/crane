@@ -1,6 +1,5 @@
 /*
 Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
 */
 package binlog
 
@@ -27,4 +26,5 @@ var (
 
 func init() {
 	binlogCmd.Flags().StringVarP(&baseOptions.SourceFile, "source", "s", "", "源文件")
+	binlogCmd.Flags().AddFlagSet(binlogCmd.Flags())
 }

@@ -1,6 +1,5 @@
 /*
 Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
 */
 package etcd
 
@@ -25,6 +24,5 @@ var (
 
 func init() {
 	etcdCmd.AddCommand(snapshotCmd)
-	snapshotCmd.Flags().AddFlagSet(etcdCmd.Flags())
 	snapshot.Etcd = etcdEntity
 }

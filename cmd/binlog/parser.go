@@ -1,6 +1,5 @@
 /*
 Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
 */
 package binlog
 
@@ -36,6 +35,5 @@ func init() {
 	binlogCmd.AddCommand(parserCmd)
 	parserCmd.Flags().StringVarP(&parserOptions.OutputFile, "output", "o", "", "输出文件")
 	parserCmd.Flags().IntVarP(&parserOptions.Limit, "limit", "l", 0, "限制Event数量")
-	binlogCmd.Flags().AddFlagSet(binlogCmd.Flags())
 	parserOptions.BaseOptions = baseOptions
 }

@@ -1,6 +1,5 @@
 /*
 Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
 */
 package mgr
 
@@ -18,6 +17,7 @@ var metaCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			_ = cmd.Help()
+			return
 		}
 		name := args[0]
 		metaShowOptions.Name = name
@@ -34,6 +34,5 @@ var (
 
 func init() {
 	mgrCmd.AddCommand(metaCmd)
-	metaCmd.Flags().AddFlagSet(mgrCmd.Flags())
 	metaShowOptions.BaseShowOptions = baseShowOptions
 }

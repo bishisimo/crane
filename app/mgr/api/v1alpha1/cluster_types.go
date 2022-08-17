@@ -1,3 +1,17 @@
+// Copyright 2018 Oracle and/or its affiliates. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package v1alpha1
 
 import (
@@ -10,6 +24,10 @@ type Resources struct {
 	Agent  *corev1.ResourceRequirements `json:"agent,omitempty"`
 	Server *corev1.ResourceRequirements `json:"server,omitempty"`
 }
+
+// MinimumMySQLVersion is the minimum version of MySQL server supported by the
+// MySQL Operator.
+const MinimumMySQLVersion = "8.0.11"
 
 // ClusterSpec defines the attributes a user can specify when creating a cluster
 type ClusterSpec struct {
@@ -140,6 +158,11 @@ type MySQLExporter struct {
 // ClusterConditionType represents a valid condition of a Cluster.
 type ClusterConditionType string
 
+const (
+	// ClusterReady means the Cluster is able to service requests.
+	ClusterReady ClusterConditionType = "Ready"
+)
+
 // ClusterCondition describes the observed state of a Cluster at a certain point.
 type ClusterCondition struct {
 	Type   ClusterConditionType   `json:"type,omitempty"`
@@ -180,8 +203,4 @@ type MySQLClusterList struct {
 	metav1.ListMeta `json:"metadata"`
 
 	Items []MySQLCluster `json:"items"`
-}
-
-func init() {
-	SchemeBuilder.Register(&MySQLCluster{}, &MySQLClusterList{})
 }

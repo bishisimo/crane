@@ -2,6 +2,7 @@ package kubex
 
 import (
 	"context"
+	"os"
 	"os/exec"
 	"time"
 )
@@ -10,8 +11,9 @@ type Options struct {
 	Namespace string        `json:"namespace"`
 	Kind      string        `json:"kind"`
 	Name      string        `json:"name"`
-	Timeout   time.Duration `json:"timeout"`
 	Contains  string        `json:"contains"`
+	Timeout   time.Duration `json:"timeout"`
+	Force     bool          `json:"force"`
 }
 
 type Worker struct {
@@ -34,4 +36,14 @@ func (w *Worker) run(args []string) ([]byte, error) {
 	defer cancel()
 	cmd := exec.CommandContext(ctx, "kubectl", args...)
 	return cmd.CombinedOutput()
+}
+
+func (w *Worker) process(args []string) error {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	cmd := exec.CommandContext(ctx, "kubectl", args...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }

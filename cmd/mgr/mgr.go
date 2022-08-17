@@ -1,6 +1,5 @@
 /*
 Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
 */
 package mgr
 
@@ -33,4 +32,6 @@ var (
 func init() {
 	mgrCmd.Flags().StringVarP(&baseShowOptions.Namespace, "namespace", "n", "", "资源所在命名空间")
 	mgrCmd.Flags().StringVarP(&baseShowOptions.Name, "target", "t", "", "目标资源")
+	clusterCmd.Flags().AddFlagSet(mgrCmd.Flags())
+	metaCmd.Flags().AddFlagSet(mgrCmd.Flags())
 }

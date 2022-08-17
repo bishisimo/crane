@@ -1,7 +1,8 @@
 package kubex
 
 import (
-	"github.com/pkg/errors"
+	"crane/pkg/errorx"
+	"fmt"
 	"github.com/rs/zerolog/log"
 	"strings"
 )
@@ -15,9 +16,10 @@ func (w *Worker) Delete() error {
 		return err
 	}
 	for _, name := range w.resources {
-		if w.Contains != "" && !strings.Contains(name, w.Contains) {
+		if w.Contains != "" && !strings.Contains(name, w.Contains) || !w.affirmDelete(name) {
 			continue
 		}
+
 		err = w.deleteOneByName(name)
 		if err != nil {
 			return err
@@ -39,21 +41,21 @@ func (w *Worker) deleteOneByName(name string) error {
 	return nil
 }
 
-func (w *Worker) ParseResources() error {
-	err := w.Get(false)
+func (w *Worker) affirmDelete(name string) bool {
+	if w.Force {
+		return true
+	}
+	fmt.Printf("确认删除[%v]: %v ? Y/[N]", w.Kind, name)
+	affirm := "N"
+	_, err := fmt.Scanln(&affirm)
 	if err != nil {
-		return err
+		if !errorx.IsUnexpectedNewLine(err) {
+			log.Err(err).Send()
+			return false
+		}
 	}
-	s := strings.TrimSpace(string(w.rawOut))
-	if strings.HasPrefix(s, "No resources found") {
-		return errors.New("No resources found")
+	if strings.ToUpper(affirm) != "Y" {
+		return false
 	}
-	lines := strings.Split(s, "\n")[1:]
-	resources := make([]string, 0, len(lines))
-	for _, line := range lines {
-		items := strings.Split(line, " ")
-		resources = append(resources, items[0])
-	}
-	w.resources = resources
-	return nil
+	return true
 }
