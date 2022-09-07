@@ -11,7 +11,11 @@ func (w *Worker) Delete() error {
 	if w.Name != "" {
 		return w.deleteOneByName(w.Name)
 	}
-	err := w.ParseResources()
+	err := w.Get(false)
+	if err != nil {
+		return err
+	}
+	err = w.ParseResources()
 	if err != nil {
 		return err
 	}
@@ -29,9 +33,9 @@ func (w *Worker) Delete() error {
 }
 
 func (w *Worker) deleteOneByName(name string) error {
-	args := []string{"delete", w.Kind, name}
-	if w.Namespace != "" {
-		args = append(args, "-n", w.Namespace)
+	args, err := NewArgument("delete", w.Options).WithKind().WithName(name).WithNamespace().WithForce().get()
+	if err != nil {
+		return err
 	}
 	rawOut, err := w.run(args)
 	if err != nil {
@@ -42,7 +46,7 @@ func (w *Worker) deleteOneByName(name string) error {
 }
 
 func (w *Worker) affirmDelete(name string) bool {
-	if w.Force {
+	if w.Affirm {
 		return true
 	}
 	fmt.Printf("确认删除[%v]: %v ? Y/[N]", w.Kind, name)

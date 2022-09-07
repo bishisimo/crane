@@ -35,4 +35,5 @@ var getCmd = &cobra.Command{
 
 func init() {
 	kubexCmd.AddCommand(getCmd)
+	kubexCmd.Flags().StringVarP(&kubexOptions.OutFormat, "out", "o", "", "指定资源输出格式")
 }

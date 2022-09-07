@@ -34,8 +34,7 @@ func (l Loading) Show() {
 		<-l.Context.Done()
 		p.Send(tea.KeyMsg{
 			Type:  -1,
-			Runes: []rune{113},
-			Alt:   false,
+			Runes: []rune{'o', 'k'},
 		})
 	}()
 	if err := p.Start(); err != nil {
@@ -53,6 +52,9 @@ func (l Loading) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "q", "esc", "ctrl+c":
+			os.Exit(0)
+			return nil, nil
+		case "ok":
 			l.quitting = true
 			return l, tea.Quit
 		default:

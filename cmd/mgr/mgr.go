@@ -13,25 +13,20 @@ var MgrCmd = mgrCmd
 // mgrCmd represents the mgr command
 var mgrCmd = &cobra.Command{
 	Use:   "mgr",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "mgr tools",
+	Long:  `辅助调试mgr`,
 	Run: func(cmd *cobra.Command, args []string) {
 		_ = cmd.Help()
 	},
 }
 
 var (
-	baseShowOptions = new(show.BaseShowOptions)
+	baseShowOptions = show.NewBaseShowOptions()
 )
 
 func init() {
 	mgrCmd.Flags().StringVarP(&baseShowOptions.Namespace, "namespace", "n", "", "资源所在命名空间")
-	mgrCmd.Flags().StringVarP(&baseShowOptions.Name, "target", "t", "", "目标资源")
+	mgrCmd.Flags().StringVarP(&baseShowOptions.OutFormat, "out", "o", "terminal", "展示形式")
 	clusterCmd.Flags().AddFlagSet(mgrCmd.Flags())
 	metaCmd.Flags().AddFlagSet(mgrCmd.Flags())
 }

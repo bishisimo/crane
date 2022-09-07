@@ -12,7 +12,9 @@ type Options struct {
 	Kind      string        `json:"kind"`
 	Name      string        `json:"name"`
 	Contains  string        `json:"contains"`
+	OutFormat string        `json:"out_format"`
 	Timeout   time.Duration `json:"timeout"`
+	Affirm    bool          `json:"affirm,omitempty"`
 	Force     bool          `json:"force"`
 }
 
@@ -21,7 +23,7 @@ type Worker struct {
 	cmd       *exec.Cmd
 	ctx       context.Context
 	cancel    context.CancelFunc
-	rawOut    []byte
+	RawOut    []byte
 	resources []string
 }
 

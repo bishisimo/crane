@@ -7,30 +7,36 @@ import (
 )
 
 func (w *Worker) Get(show bool) error {
-	args := []string{"get", w.Kind}
-	if w.Name != "" {
-		args = append(args, w.Name)
-	}
-	if w.Namespace != "" {
-		args = append(args, "-n", w.Namespace)
+	args, err := NewArgument("get", w.Options).WithKind().WithName().WithNamespace().WithOutFormat().get()
+	if err != nil {
+		return err
 	}
 	rawOut, err := w.run(args)
 	if err != nil {
 		return err
 	}
-	w.rawOut = rawOut
+	w.RawOut = rawOut
 	if show {
-		fmt.Println(string(w.rawOut))
+		return w.ShowGet()
 	}
 	return nil
 }
 
-func (w *Worker) ParseResources() error {
-	err := w.Get(false)
-	if err != nil {
-		return err
+func (w *Worker) ShowGet() error {
+	s := string(w.RawOut)
+	sp := strings.Split(s, "\n")
+	result := make([]string, 0)
+	for i, line := range sp {
+		if i == 0 || w.Contains == "" || strings.Contains(line, w.Contains) {
+			result = append(result, line)
+		}
 	}
-	s := strings.TrimSpace(string(w.rawOut))
+	fmt.Println(strings.Join(result, "\n"))
+	return nil
+}
+
+func (w *Worker) ParseResources() error {
+	s := strings.TrimSpace(string(w.RawOut))
 	if strings.HasPrefix(s, "No resources found") {
 		return errorx.NotFound
 	}

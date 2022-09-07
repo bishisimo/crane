@@ -1,6 +1,7 @@
 package kubex
 
 import (
+	"crane/pkg/errorx"
 	"crane/pkg/ui/list"
 )
 
@@ -8,7 +9,11 @@ func (w *Worker) Edit() error {
 	if w.Name != "" {
 		return w.editOneByName(w.Name)
 	}
-	err := w.ParseResources()
+	err := w.Get(false)
+	if err != nil {
+		return err
+	}
+	err = w.ParseResources()
 	if err != nil {
 		return err
 	}
@@ -24,11 +29,11 @@ func (w *Worker) Edit() error {
 }
 
 func (w *Worker) editOneByName(name string) error {
-	args := []string{"edit", w.Kind, name}
-	if w.Namespace != "" {
-		args = append(args, "-n", w.Namespace)
+	args, err := NewArgument("edit", w.Options).WithKind().WithName(name).WithNamespace().get()
+	if err != nil {
+		return err
 	}
-	err := w.process(args)
+	err = w.process(args)
 	if err != nil {
 		return err
 	}
@@ -36,6 +41,9 @@ func (w *Worker) editOneByName(name string) error {
 }
 
 func (w *Worker) affirmEdit() (string, error) {
+	if len(w.resources) == 0 {
+		return "", errorx.NotFound
+	}
 	if len(w.resources) == 1 {
 		return w.resources[0], nil
 	}

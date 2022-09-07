@@ -38,7 +38,24 @@ func (s MetaShow) Show() error {
 	if err != nil {
 		return err
 	}
-	return s.List()
+	switch s.Options.OutFormat {
+	case "html":
+		return s.ShowByHtml()
+	default:
+		return s.List()
+	}
+}
+
+func (s MetaShow) ShowByHtml() error {
+	//e := gin.Default()
+	//e.GET("/meta", func(c *gin.Context) {
+	//	t, err := template.ParseFiles("")
+	//	if err != nil {
+	//		return
+	//	}
+	//	c.HTML(200,"meta",t.)
+	//})
+	return nil
 }
 
 func (s MetaShow) loading(show bool) error {
@@ -65,8 +82,8 @@ func (s MetaShow) List() error {
 	dataChan := make(chan []string, 1)
 	go s.parseBackupInfo(dataChan)
 	<-s.loadingContext.Done()
-	list := list.NewList("Meta")
-	return list.Show(dataChan)
+	l := list.NewList("Meta")
+	return l.Show(dataChan)
 }
 
 func (s MetaShow) parseBackupInfo(dataChan chan []string) {
