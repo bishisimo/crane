@@ -1,25 +1,27 @@
 package list
 
-import ui "github.com/gizak/termui/v3"
+import (
+	ui "github.com/gizak/termui/v3"
+)
 
-func (l *List) Show(data chan []string) error {
+func (p *Presenter) Show(data chan []string) error {
 	if err := ui.Init(); err != nil {
 		return err
 	}
 	defer ui.Close()
-	go l.showController()
+	go p.showController()
 	for {
 		select {
-		case <-l.ctx.Done():
+		case <-p.ctx.Done():
 			return nil
 		case rows := <-data:
-			l.Rows = rows
-			ui.Render(l)
+			p.Rows = rows
+			ui.Render(p)
 		}
 	}
 }
 
-func (l *List) showController() {
+func (p *Presenter) showController() {
 	previousKey := ""
 	go func() {
 		uiEvents := ui.PollEvents()
@@ -27,28 +29,28 @@ func (l *List) showController() {
 			e := <-uiEvents
 			switch e.ID {
 			case "q", "<C-c>":
-				l.cancel()
+				p.cancel()
 				return
 			case "j", "<Down>":
-				l.ScrollDown()
+				p.ScrollDown()
 			case "k", "<Up>":
-				l.ScrollUp()
+				p.ScrollUp()
 			case "<Chan-d>":
-				l.ScrollHalfPageDown()
+				p.ScrollHalfPageDown()
 			case "<Chan-u>":
-				l.ScrollHalfPageUp()
+				p.ScrollHalfPageUp()
 			case "<Chan-f>":
-				l.ScrollPageDown()
+				p.ScrollPageDown()
 			case "<Chan-b>":
-				l.ScrollPageUp()
+				p.ScrollPageUp()
 			case "g":
 				if previousKey == "g" {
-					l.ScrollTop()
+					p.ScrollTop()
 				}
 			case "<Home>":
-				l.ScrollTop()
+				p.ScrollTop()
 			case "G", "<End>":
-				l.ScrollBottom()
+				p.ScrollBottom()
 			}
 
 			if previousKey == "g" {
@@ -57,7 +59,7 @@ func (l *List) showController() {
 				previousKey = e.ID
 			}
 
-			ui.Render(l)
+			ui.Render(p)
 		}
 	}()
 }

@@ -1,14 +1,11 @@
 /*
 Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
-	"crane/cmd/binlog"
 	"crane/cmd/etcd"
 	"crane/cmd/kubex"
-	"crane/cmd/mgr"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -45,7 +42,5 @@ func init() {
 	// when this action is called directly.
 	rootCmd.AddCommand(etcd.EtcdCmd)
 	rootCmd.AddCommand(kubex.KubexCmd)
-	rootCmd.AddCommand(mgr.MgrCmd)
-	rootCmd.AddCommand(binlog.BinlogCmd)
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

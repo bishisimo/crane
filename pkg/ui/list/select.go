@@ -5,22 +5,22 @@ import (
 	ui "github.com/gizak/termui/v3"
 )
 
-func (l *List) Select(rows []string) (int, error) {
+func (p *Presenter) Select(rows []string) (int, error) {
 	if err := ui.Init(); err != nil {
 		return 0, err
 	}
 	defer ui.Close()
-	go l.selectController()
-	l.Rows = rows
-	ui.Render(l)
-	<-l.ctx.Done()
-	if l.isCancel {
+	go p.selectController()
+	p.Rows = rows
+	ui.Render(p)
+	<-p.ctx.Done()
+	if p.isCancel {
 		return 0, errorx.Canceled
 	}
-	return l.SelectedRow, nil
+	return p.SelectedRow, nil
 }
 
-func (l *List) selectController() {
+func (p *Presenter) selectController() {
 	go func() {
 		previousKey := ""
 		uiEvents := ui.PollEvents()
@@ -28,23 +28,23 @@ func (l *List) selectController() {
 			e := <-uiEvents
 			switch e.ID {
 			case "q", "<Chan-c>":
-				l.isCancel = true
-				l.cancel()
+				p.isCancel = true
+				p.cancel()
 				return
 			case "j", "<Down>":
-				l.ScrollDown()
+				p.ScrollDown()
 			case "k", "<Up>":
-				l.ScrollUp()
+				p.ScrollUp()
 			case "g":
 				if previousKey == "g" {
-					l.ScrollTop()
+					p.ScrollTop()
 				}
 			case "<Home>":
-				l.ScrollTop()
+				p.ScrollTop()
 			case "G", "<End>":
-				l.ScrollBottom()
+				p.ScrollBottom()
 			case "<Enter>":
-				l.cancel()
+				p.cancel()
 				return
 			}
 
@@ -54,7 +54,7 @@ func (l *List) selectController() {
 				previousKey = e.ID
 			}
 
-			ui.Render(l)
+			ui.Render(p)
 		}
 	}()
 }

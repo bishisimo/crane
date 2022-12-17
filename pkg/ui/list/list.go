@@ -6,14 +6,14 @@ import (
 	"github.com/gizak/termui/v3/widgets"
 )
 
-type List struct {
+type Presenter struct {
 	*widgets.List
 	ctx      context.Context
 	cancel   context.CancelFunc
 	isCancel bool
 }
 
-func NewList(title string) *List {
+func NewList(title string) *Presenter {
 	l := widgets.NewList()
 	l.Title = title
 	l.TextStyle = ui.NewStyle(ui.ColorClear)
@@ -21,7 +21,7 @@ func NewList(title string) *List {
 	l.SetRect(0, 0, 100, 12)
 	l.SelectedRowStyle = ui.NewStyle(ui.ColorCyan)
 	ctx, cancel := context.WithCancel(context.Background())
-	return &List{
+	return &Presenter{
 		List:   l,
 		ctx:    ctx,
 		cancel: cancel,

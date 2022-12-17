@@ -84,11 +84,7 @@ func (v Validate) CustomerErr(err validator.FieldError) string {
 	return errTrans
 }
 
-// Struct
-//  @Description: 验证Struct并翻译
-//  @receiver v
-//  @param s
-//  @return error
+// Struct 验证Struct并翻译
 func (v Validate) Struct(s interface{}) error {
 	err := v.Validate.Struct(s)
 	if err != nil {
