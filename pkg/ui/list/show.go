@@ -26,7 +26,7 @@ func (l *List) showController() {
 		for {
 			e := <-uiEvents
 			switch e.ID {
-			case "q", "<Chan-c>":
+			case "q", "<C-c>":
 				l.cancel()
 				return
 			case "j", "<Down>":

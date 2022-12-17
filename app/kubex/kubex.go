@@ -8,14 +8,15 @@ import (
 )
 
 type Options struct {
-	Namespace string        `json:"namespace"`
-	Kind      string        `json:"kind"`
-	Name      string        `json:"name"`
-	Contains  string        `json:"contains"`
-	OutFormat string        `json:"out_format"`
-	Timeout   time.Duration `json:"timeout"`
-	Affirm    bool          `json:"affirm,omitempty"`
-	Force     bool          `json:"force"`
+	Namespace    string        `json:"namespace"`
+	Kind         string        `json:"kind"`
+	Name         string        `json:"name"`
+	Contains     string        `json:"contains"`
+	OutFormat    string        `json:"out_format"`
+	Timeout      time.Duration `json:"timeout"`
+	Affirm       bool          `json:"affirm"`
+	Force        bool          `json:"force"`
+	AllNamespace bool          `json:"allNamespace"`
 }
 
 type Worker struct {

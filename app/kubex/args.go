@@ -35,8 +35,16 @@ func (a *argument) WithKind() *argument {
 }
 
 func (a *argument) WithNamespace() *argument {
-	if a.err == nil && a.Namespace != "" {
+	if a.err != nil {
+		return a
+	}
+	if a.Namespace != "" {
 		a.data = append(a.data, "-n", a.Namespace)
+		return a
+	}
+	if a.AllNamespace {
+		a.data = append(a.data, "-A")
+		return a
 	}
 	return a
 }

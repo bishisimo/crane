@@ -1,5 +1,5 @@
 default:
-	make etcd_snapshot
+	make build
 build:
 	go build
 etcd_snapshot:
