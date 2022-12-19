@@ -23,13 +23,17 @@ func (c *KubeCtx) Use(opts *UseOptions) error {
 
 func (c *KubeCtx) useFile(host string) error {
 	filePath := c.metadata[host].Path
-	if util.IsFileExists(c.workContext) {
-		err := os.Remove(c.workContext)
+	if util.IsRegularFile(c.workContext) && !util.IsFileExists(c.mainContext) {
+		err := c.InitMainConfig()
 		if err != nil {
 			return err
 		}
 	}
-	err := os.Symlink(filePath, c.workContext)
+	err := os.Remove(c.workContext)
+	if err != nil {
+		return err
+	}
+	err = os.Symlink(filePath, c.workContext)
 	if err != nil {
 		return err
 	}

@@ -44,5 +44,4 @@ func init() {
 	rootCmd.AddCommand(etcd.EtcdCmd)
 	rootCmd.AddCommand(kubex.Cmd)
 	rootCmd.AddCommand(kubectx.Cmd)
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

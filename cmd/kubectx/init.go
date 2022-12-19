@@ -13,7 +13,7 @@ import (
 var initCmd = &cobra.Command{
 	Use:     "init",
 	Aliases: []string{""},
-	Short:   "初始化 kubectl context",
+	Short:   "初始化 [kubectl context] 资源",
 	Long:    ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		kc := kubectx.NewKubeCtx(nil)

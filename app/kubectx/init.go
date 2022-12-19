@@ -4,18 +4,11 @@ import (
 	"crane/pkg/ui"
 	"crane/util"
 	"github.com/duke-git/lancet/v2/fileutil"
-	"os"
-	"path"
 )
 
 func (c *KubeCtx) InitMainConfig() error {
-	mainConfigPath := path.Join(c.Workspace, ".config")
 	if util.IsFileExists(c.workContext) {
-		stat, err := os.Lstat(c.workContext)
-		if err != nil {
-			return err
-		}
-		if !stat.Mode().Type().IsRegular() {
+		if !util.IsRegularFile(c.workContext) {
 			return nil
 		}
 		if !ui.Confirm("kube config file is init, are you sure cover that?") {
@@ -23,13 +16,12 @@ func (c *KubeCtx) InitMainConfig() error {
 		}
 	}
 
-	err := fileutil.CopyFile(c.workContext, mainConfigPath)
+	err := fileutil.CopyFile(c.workContext, c.mainContext)
 	if err != nil {
 		return err
 	}
-	bkPath := mainConfigPath + ".bk"
-	if !util.IsFileExists(bkPath) {
-		fileutil.CopyFile(mainConfigPath, bkPath)
+	if !util.IsFileExists(c.backupContext) {
+		fileutil.CopyFile(c.mainContext, c.backupContext)
 	}
 	return nil
 }

@@ -13,7 +13,7 @@ import (
 var useCmd = &cobra.Command{
 	Use:     "use",
 	Aliases: []string{"set"},
-	Short:   "设置当前 kubectl context",
+	Short:   "使用指定 [kubectl context] 资源",
 	Long:    ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 && useOptions.Target == "" {
@@ -36,5 +36,5 @@ var useOptions = new(kubectx.UseOptions)
 
 func init() {
 	ctxCmd.AddCommand(useCmd)
-	useCmd.Flags().StringVarP(&useOptions.Target, "target", "t", "", "")
+	useCmd.Flags().StringVarP(&useOptions.Target, "target", "t", "", "使用指定的context资源")
 }

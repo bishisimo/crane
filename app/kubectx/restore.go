@@ -6,39 +6,32 @@ import (
 	"github.com/duke-git/lancet/v2/fileutil"
 	"github.com/pkg/errors"
 	"os"
-	"path"
 )
 
 func (c *KubeCtx) Restore() error {
-	mainConfigPath := path.Join(c.Workspace, ".config")
 	if !util.IsFileExists(c.workContext) {
-		bkPath := mainConfigPath + ".bk"
-		if !util.IsFileExists(bkPath) {
+		if !util.IsFileExists(c.backupContext) {
 			return errors.New("not found")
 		}
-		err := fileutil.CopyFile(bkPath, mainConfigPath)
+		err := fileutil.CopyFile(c.backupContext, c.mainContext)
 		if err != nil {
 			return err
 		}
 	}
 
 	if util.IsFileExists(c.workContext) {
-		stat, err := os.Lstat(c.workContext)
-		if err != nil {
-			return err
-		}
-		if stat.Mode().Type().IsRegular() {
+		if util.IsRegularFile(c.workContext) {
 			if !ui.Confirm("kube config file is exist, are you sure cover that?") {
 				return nil
 			}
 		}
-		err = os.Remove(c.workContext)
+		err := os.Remove(c.workContext)
 		if err != nil {
 			return err
 		}
 	}
 
-	err := fileutil.CopyFile(mainConfigPath, c.workContext)
+	err := fileutil.CopyFile(c.mainContext, c.workContext)
 	if err != nil {
 		return err
 	}

@@ -29,22 +29,26 @@ type Metadata struct {
 
 type KubeCtx struct {
 	*Options
-	Workspace   string
-	workContext string
-	metaPath    string
-	viper       *viper.Viper
-	metadata    map[string]*Metadata
+	Workspace     string
+	workContext   string
+	mainContext   string
+	backupContext string
+	metaPath      string
+	viper         *viper.Viper
+	metadata      map[string]*Metadata
 }
 
 func NewKubeCtx(opts *Options) *KubeCtx {
 	workspace := viper.GetString("crane.kubeSpace")
 	k := &KubeCtx{
-		Options:     opts,
-		Workspace:   workspace,
-		workContext: path.Join(viper.GetString("HOME"), ".kube", "config"),
-		metaPath:    path.Join(workspace, "metadata"),
-		viper:       viper.New(),
-		metadata:    make(map[string]*Metadata),
+		Options:       opts,
+		Workspace:     workspace,
+		workContext:   path.Join(viper.GetString("HOME"), ".kube", "config"),
+		mainContext:   path.Join(workspace, ".config"),
+		backupContext: path.Join(workspace, ".config") + ".bk",
+		metaPath:      path.Join(workspace, "metadata"),
+		viper:         viper.New(),
+		metadata:      make(map[string]*Metadata),
 	}
 	k.LoadMetadata()
 	return k
