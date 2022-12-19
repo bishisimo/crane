@@ -9,9 +9,9 @@ import (
 	"time"
 )
 
-var KubexCmd = kubexCmd
+var Cmd = kubexCmd
 
-// kubexCmd represents the etcd command
+// kubexCmd represents the kubex command
 var kubexCmd = &cobra.Command{
 	Use:   "kubex",
 	Short: "kubectl 扩展",

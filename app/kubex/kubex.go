@@ -19,7 +19,7 @@ type Options struct {
 	AllNamespace bool          `json:"allNamespace"`
 }
 
-type Worker struct {
+type Kubex struct {
 	*Options
 	cmd       *exec.Cmd
 	ctx       context.Context
@@ -28,20 +28,20 @@ type Worker struct {
 	resources []string
 }
 
-func NewWorker(opts *Options) *Worker {
-	return &Worker{
+func NewWorker(opts *Options) *Kubex {
+	return &Kubex{
 		Options: opts,
 	}
 }
 
-func (w *Worker) run(args []string) ([]byte, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), w.Timeout)
+func (k *Kubex) run(args []string) ([]byte, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), k.Timeout)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, "kubectl", args...)
 	return cmd.CombinedOutput()
 }
 
-func (w *Worker) process(args []string) error {
+func (k *Kubex) process(args []string) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	cmd := exec.CommandContext(ctx, "kubectl", args...)

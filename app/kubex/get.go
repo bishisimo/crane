@@ -6,28 +6,28 @@ import (
 	"strings"
 )
 
-func (w *Worker) Get(show bool) error {
-	args, err := NewArgument("get", w.Options).WithKind().WithName().WithNamespace().WithOutFormat().get()
+func (k *Kubex) Get(show bool) error {
+	args, err := NewArgument("get", k.Options).WithKind().WithName().WithNamespace().WithOutFormat().get()
 	if err != nil {
 		return err
 	}
-	rawOut, err := w.run(args)
+	rawOut, err := k.run(args)
 	if err != nil {
 		return err
 	}
-	w.RawOut = rawOut
+	k.RawOut = rawOut
 	if show {
-		return w.ShowGet()
+		return k.ShowGet()
 	}
 	return nil
 }
 
-func (w *Worker) ShowGet() error {
-	s := string(w.RawOut)
+func (k *Kubex) ShowGet() error {
+	s := string(k.RawOut)
 	sp := strings.Split(s, "\n")
 	result := make([]string, 0)
 	for i, line := range sp {
-		if i == 0 || w.Contains == "" || strings.Contains(line, w.Contains) {
+		if i == 0 || k.Contains == "" || strings.Contains(line, k.Contains) {
 			result = append(result, line)
 		}
 	}
@@ -35,8 +35,8 @@ func (w *Worker) ShowGet() error {
 	return nil
 }
 
-func (w *Worker) ParseResources() error {
-	s := strings.TrimSpace(string(w.RawOut))
+func (k *Kubex) ParseResources() error {
+	s := strings.TrimSpace(string(k.RawOut))
 	if strings.HasPrefix(s, "No resources found") {
 		return errorx.NotFound
 	}
@@ -47,8 +47,8 @@ func (w *Worker) ParseResources() error {
 		resources = append(resources, items[0])
 	}
 	for _, name := range resources {
-		if w.Contains == "" || strings.Contains(name, w.Contains) {
-			w.resources = append(w.resources, name)
+		if k.Contains == "" || strings.Contains(name, k.Contains) {
+			k.resources = append(k.resources, name)
 		}
 	}
 	return nil

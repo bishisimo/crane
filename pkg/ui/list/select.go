@@ -27,7 +27,7 @@ func (p *Presenter) selectController() {
 		for {
 			e := <-uiEvents
 			switch e.ID {
-			case "q", "<Chan-c>":
+			case "q", "Escape", "<C-c>":
 				p.isCancel = true
 				p.cancel()
 				return

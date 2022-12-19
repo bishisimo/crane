@@ -7,24 +7,24 @@ import (
 	"strings"
 )
 
-func (w *Worker) Delete() error {
-	if w.Name != "" {
-		return w.deleteOneByName(w.Name)
+func (k *Kubex) Delete() error {
+	if k.Name != "" {
+		return k.deleteOneByName(k.Name)
 	}
-	err := w.Get(false)
+	err := k.Get(false)
 	if err != nil {
 		return err
 	}
-	err = w.ParseResources()
+	err = k.ParseResources()
 	if err != nil {
 		return err
 	}
-	for _, name := range w.resources {
-		if w.Contains != "" && !strings.Contains(name, w.Contains) || !w.affirmDelete(name) {
+	for _, name := range k.resources {
+		if k.Contains != "" && !strings.Contains(name, k.Contains) || !k.affirmDelete(name) {
 			continue
 		}
 
-		err = w.deleteOneByName(name)
+		err = k.deleteOneByName(name)
 		if err != nil {
 			return err
 		}
@@ -32,12 +32,12 @@ func (w *Worker) Delete() error {
 	return nil
 }
 
-func (w *Worker) deleteOneByName(name string) error {
-	args, err := NewArgument("delete", w.Options).WithKind().WithName(name).WithNamespace().WithForce().get()
+func (k *Kubex) deleteOneByName(name string) error {
+	args, err := NewArgument("delete", k.Options).WithKind().WithName(name).WithNamespace().WithForce().get()
 	if err != nil {
 		return err
 	}
-	rawOut, err := w.run(args)
+	rawOut, err := k.run(args)
 	if err != nil {
 		return err
 	}
@@ -45,11 +45,11 @@ func (w *Worker) deleteOneByName(name string) error {
 	return nil
 }
 
-func (w *Worker) affirmDelete(name string) bool {
-	if w.Affirm {
+func (k *Kubex) affirmDelete(name string) bool {
+	if k.Affirm {
 		return true
 	}
-	fmt.Printf("确认删除[%v]: %v ? Y/[N]", w.Kind, name)
+	fmt.Printf("确认删除[%v]: %v ? Y/[N]", k.Kind, name)
 	affirm := "N"
 	_, err := fmt.Scanln(&affirm)
 	if err != nil {

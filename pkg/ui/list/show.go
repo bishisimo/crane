@@ -4,21 +4,16 @@ import (
 	ui "github.com/gizak/termui/v3"
 )
 
-func (p *Presenter) Show(data chan []string) error {
+func (p *Presenter) Show(data []string) error {
 	if err := ui.Init(); err != nil {
 		return err
 	}
 	defer ui.Close()
 	go p.showController()
-	for {
-		select {
-		case <-p.ctx.Done():
-			return nil
-		case rows := <-data:
-			p.Rows = rows
-			ui.Render(p)
-		}
-	}
+	p.Rows = data
+	ui.Render(p)
+	<-p.ctx.Done()
+	return nil
 }
 
 func (p *Presenter) showController() {
@@ -28,7 +23,7 @@ func (p *Presenter) showController() {
 		for {
 			e := <-uiEvents
 			switch e.ID {
-			case "q", "<C-c>":
+			case "q", "Escape", "<C-c>":
 				p.cancel()
 				return
 			case "j", "<Down>":
