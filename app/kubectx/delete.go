@@ -5,6 +5,13 @@ type DeleteOptions struct {
 }
 
 func (c *KubeCtx) Delete(opts *DeleteOptions) error {
-
+	key, err := c.getHostByTarget(opts.Target)
+	if err != nil {
+		return err
+	}
+	err = c.DeleteMetadata(key)
+	if err != nil {
+		return err
+	}
 	return nil
 }

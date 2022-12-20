@@ -23,7 +23,7 @@ var addCmd = &cobra.Command{
 		if len(args) > 0 {
 			addOpts.ParserUri(args[0])
 		}
-		kc := kubectx.NewKubeCtx(nil)
+		kc := kubectx.NewKubeCtx()
 		err := kc.Add(addOpts)
 		if err != nil {
 			log.Err(err).Send()

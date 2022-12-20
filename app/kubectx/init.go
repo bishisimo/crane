@@ -7,8 +7,8 @@ import (
 )
 
 func (c *KubeCtx) InitMainConfig() error {
-	if util.IsFileExists(c.workContext) {
-		if !util.IsRegularFile(c.workContext) {
+	if util.IsFileExists(c.mainContext) {
+		if !util.IsRegularFile(c.mainContext) {
 			return nil
 		}
 		if !ui.Confirm("kube config file is init, are you sure cover that?") {
@@ -16,12 +16,12 @@ func (c *KubeCtx) InitMainConfig() error {
 		}
 	}
 
-	err := fileutil.CopyFile(c.workContext, c.mainContext)
+	err := fileutil.CopyFile(c.mainContext, c.wardContext)
 	if err != nil {
 		return err
 	}
 	if !util.IsFileExists(c.backupContext) {
-		fileutil.CopyFile(c.mainContext, c.backupContext)
+		fileutil.CopyFile(c.wardContext, c.backupContext)
 	}
 	return nil
 }

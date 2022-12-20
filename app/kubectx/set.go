@@ -7,11 +7,14 @@ type SetOptions struct {
 }
 
 func (c *KubeCtx) Set(opts *SetOptions) error {
+	if opts.Target == "" {
+		opts.Target = c.metadata.Current
+	}
 	host, err := c.getHostByTarget(opts.Target)
 	if err != nil {
 		return err
 	}
-	filePath := c.metadata[host].Path
+	filePath := c.metadata.Contexts[host].Path
 	kubeConfig, err := LoadKubeConfig(filePath)
 	if err != nil {
 		return err
@@ -28,10 +31,9 @@ func (c *KubeCtx) Set(opts *SetOptions) error {
 		return err
 	}
 	if opts.Name != "" {
-		c.metadata[host].Name = opts.Name
-		c.metadata[host].Ctx.Name = opts.Name
+		c.metadata.Contexts[host].Name = opts.Name
 	}
-	c.metadata[host].Ctx.Namespace = opts.Namespace
+	c.metadata.Contexts[host].Namespace = opts.Namespace
 	c.StoreMetadata()
 	return nil
 }

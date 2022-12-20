@@ -23,7 +23,7 @@ var deleteCmd = &cobra.Command{
 		if len(args) > 0 && deleteOpts.Target == "" {
 			deleteOpts.Target = args[0]
 		}
-		kc := kubectx.NewKubeCtx(nil)
+		kc := kubectx.NewKubeCtx()
 		err := kc.Delete(deleteOpts)
 		if err != nil {
 			log.Err(err).Send()

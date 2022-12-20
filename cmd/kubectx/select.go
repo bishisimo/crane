@@ -16,7 +16,7 @@ var selectCmd = &cobra.Command{
 	Short:   "选择 [kubectl context] 资源",
 	Long:    ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		kc := kubectx.NewKubeCtx(nil)
+		kc := kubectx.NewKubeCtx()
 		err := kc.Select()
 		if err != nil {
 			log.Err(err).Send()

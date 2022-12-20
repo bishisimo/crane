@@ -16,7 +16,7 @@ var restoreCmd = &cobra.Command{
 	Short:   "恢复 [kubectl context] 资源",
 	Long:    ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		kc := kubectx.NewKubeCtx(nil)
+		kc := kubectx.NewKubeCtx()
 		err := kc.Restore()
 		if err != nil {
 			log.Err(err).Send()

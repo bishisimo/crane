@@ -10,11 +10,14 @@ type GetOptions struct {
 }
 
 func (c *KubeCtx) Get(opts *GetOptions) error {
+	if opts.Target == "" {
+		opts.Target = c.metadata.Current
+	}
 	host, err := c.getHostByTarget(opts.Target)
 	if err != nil {
 		return err
 	}
-	if info, ok := c.metadata[host]; ok {
+	if info, ok := c.metadata.Contexts[host]; ok {
 		util.Println(info)
 		return nil
 	}

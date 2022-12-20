@@ -15,7 +15,7 @@ var listCmd = &cobra.Command{
 	Short:   "展示 [kubectl context] 资源",
 	Long:    ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		kc := kubectx.NewKubeCtx(nil)
+		kc := kubectx.NewKubeCtx()
 		err := kc.List()
 		if err != nil {
 			return

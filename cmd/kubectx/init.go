@@ -16,7 +16,7 @@ var initCmd = &cobra.Command{
 	Short:   "初始化 [kubectl context] 资源",
 	Long:    ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		kc := kubectx.NewKubeCtx(nil)
+		kc := kubectx.NewKubeCtx()
 		err := kc.InitMainConfig()
 		if err != nil {
 			log.Err(err).Send()

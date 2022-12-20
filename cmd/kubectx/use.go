@@ -23,7 +23,7 @@ var useCmd = &cobra.Command{
 		if len(args) > 0 && useOptions.Target == "" {
 			useOptions.Target = args[0]
 		}
-		kc := kubectx.NewKubeCtx(nil)
+		kc := kubectx.NewKubeCtx()
 		err := kc.Use(useOptions)
 		if err != nil {
 			log.Err(err).Send()

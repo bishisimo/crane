@@ -6,10 +6,10 @@ import (
 )
 
 func (c *KubeCtx) Select() error {
-	data := make([]string, 0, len(c.metadata))
-	hosts := make([]string, 0, len(c.metadata))
-	for k, v := range c.metadata {
-		line := []string{k, v.Name, v.Ctx.Namespace}
+	data := make([]string, 0, len(c.metadata.Contexts))
+	hosts := make([]string, 0, len(c.metadata.Contexts))
+	for k, v := range c.metadata.Contexts {
+		line := []string{k, v.Name, v.Namespace}
 		data = append(data, strings.Join(line, " | "))
 		hosts = append(hosts, k)
 	}
@@ -17,6 +17,11 @@ func (c *KubeCtx) Select() error {
 	if err != nil {
 		return err
 	}
-	c.useFile(hosts[i])
+	err = c.useFile(hosts[i])
+	if err != nil {
+		return err
+	}
+	c.metadata.Current = hosts[i]
+	c.StoreMetadata()
 	return nil
 }

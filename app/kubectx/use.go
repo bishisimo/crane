@@ -18,22 +18,24 @@ func (c *KubeCtx) Use(opts *UseOptions) error {
 	if err != nil {
 		return err
 	}
+	c.metadata.Current = host
+	c.StoreMetadata()
 	return nil
 }
 
 func (c *KubeCtx) useFile(host string) error {
-	filePath := c.metadata[host].Path
-	if util.IsRegularFile(c.workContext) && !util.IsFileExists(c.mainContext) {
+	filePath := c.metadata.Contexts[host].Path
+	if util.IsRegularFile(c.mainContext) && !util.IsFileExists(c.wardContext) {
 		err := c.InitMainConfig()
 		if err != nil {
 			return err
 		}
 	}
-	err := os.Remove(c.workContext)
+	err := os.Remove(c.mainContext)
 	if err != nil {
 		return err
 	}
-	err = os.Symlink(filePath, c.workContext)
+	err = os.Symlink(filePath, c.mainContext)
 	if err != nil {
 		return err
 	}

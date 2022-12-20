@@ -9,29 +9,29 @@ import (
 )
 
 func (c *KubeCtx) Restore() error {
-	if !util.IsFileExists(c.workContext) {
+	if !util.IsFileExists(c.mainContext) {
 		if !util.IsFileExists(c.backupContext) {
 			return errors.New("not found")
 		}
-		err := fileutil.CopyFile(c.backupContext, c.mainContext)
+		err := fileutil.CopyFile(c.backupContext, c.wardContext)
 		if err != nil {
 			return err
 		}
 	}
 
-	if util.IsFileExists(c.workContext) {
-		if util.IsRegularFile(c.workContext) {
+	if util.IsFileExists(c.mainContext) {
+		if util.IsRegularFile(c.mainContext) {
 			if !ui.Confirm("kube config file is exist, are you sure cover that?") {
 				return nil
 			}
 		}
-		err := os.Remove(c.workContext)
+		err := os.Remove(c.mainContext)
 		if err != nil {
 			return err
 		}
 	}
 
-	err := fileutil.CopyFile(c.mainContext, c.workContext)
+	err := fileutil.CopyFile(c.wardContext, c.mainContext)
 	if err != nil {
 		return err
 	}
