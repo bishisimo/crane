@@ -1,6 +1,7 @@
 package kubectx
 
 import (
+	"crane/pkg/ui"
 	"crane/util"
 	"github.com/pelletier/go-toml"
 	"github.com/pkg/errors"
@@ -121,14 +122,30 @@ func (c *KubeCtx) DeleteMetadata(key string) error {
 	return nil
 }
 
-func (c *KubeCtx) getHostByTarget(target string) (string, error) {
+func (c *KubeCtx) getKeyByTarget(target string) (string, error) {
+	candidate := make([]string, 0)
 	for k, v := range c.metadata.Contexts {
 		if k == target {
-			return k, nil
+			candidate = append(candidate, k)
 		}
 		if v.Name == target {
-			return k, nil
+			candidate = append(candidate, k)
 		}
+	}
+	if len(candidate) == 1 {
+		return candidate[0], nil
+	}
+	if len(candidate) > 1 {
+		data := make([]string, 0, len(candidate))
+		for _, key := range candidate {
+			line := []string{key, c.metadata.Contexts[key].Name, c.metadata.Contexts[key].Namespace}
+			data = append(data, strings.Join(line, " | "))
+		}
+		i, err := ui.Select(data)
+		if err != nil {
+			return "", err
+		}
+		return candidate[i], nil
 	}
 	return "", errors.New("Not Found")
 }

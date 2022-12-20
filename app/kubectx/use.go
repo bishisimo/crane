@@ -10,16 +10,19 @@ type UseOptions struct {
 }
 
 func (c *KubeCtx) Use(opts *UseOptions) error {
-	host, err := c.getHostByTarget(opts.Target)
+	key, err := c.getKeyByTarget(opts.Target)
 	if err != nil {
 		return err
 	}
-	err = c.useFile(host)
+	err = c.useFile(key)
 	if err != nil {
 		return err
 	}
-	c.metadata.Current = host
-	c.StoreMetadata()
+	c.metadata.Current = key
+	err = c.StoreMetadata()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

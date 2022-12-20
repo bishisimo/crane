@@ -16,6 +16,9 @@ var setCmd = &cobra.Command{
 	Short:   "设置 [kubectl context] 资源",
 	Long:    ``,
 	Run: func(cmd *cobra.Command, args []string) {
+		if setOptions.Target == "" && len(args) > 0 {
+			setOptions.Target = args[0]
+		}
 		kc := kubectx.NewKubeCtx()
 		err := kc.Set(setOptions)
 		if err != nil {
@@ -29,7 +32,7 @@ var setOptions = new(kubectx.SetOptions)
 
 func init() {
 	ctxCmd.AddCommand(setCmd)
-	setCmd.Flags().StringVarP(&setOptions.Target, "target", "t", "", "设置指定的context资源")
+	setCmd.Flags().StringVarP(&setOptions.Target, "target", "t", "", "指定context资源")
 	setCmd.Flags().StringVarP(&setOptions.Name, "name", "n", "", "设置名称")
 	setCmd.Flags().StringVarP(&setOptions.Namespace, "namespace", "N", "", "设置默认命名空间")
 }
