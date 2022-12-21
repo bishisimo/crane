@@ -1,7 +1,7 @@
 package kubex
 
 import (
-	"crane/pkg/errorx"
+	"crane/pkg/ui"
 	"fmt"
 	"github.com/rs/zerolog/log"
 	"strings"
@@ -49,17 +49,7 @@ func (k *Kubex) affirmDelete(name string) bool {
 	if k.Affirm {
 		return true
 	}
-	fmt.Printf("确认删除[%v]: %v ? Y/[N]", k.Kind, name)
-	affirm := "N"
-	_, err := fmt.Scanln(&affirm)
-	if err != nil {
-		if !errorx.IsUnexpectedNewLine(err) {
-			log.Err(err).Send()
-			return false
-		}
-	}
-	if strings.ToUpper(affirm) != "Y" {
-		return false
-	}
-	return true
+	title := fmt.Sprintf("确认删除[%v]: %v ?", k.Kind, name)
+	confirm := ui.Confirm(title)
+	return confirm
 }
