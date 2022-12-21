@@ -9,7 +9,11 @@ func (c *KubeCtx) Select() error {
 	data := make([]string, 0, len(c.metadata.Contexts))
 	hosts := make([]string, 0, len(c.metadata.Contexts))
 	for k, v := range c.metadata.Contexts {
-		line := []string{k, v.Name, v.Namespace}
+		flag := " "
+		if k == c.metadata.Current {
+			flag = "√"
+		}
+		line := []string{flag, k, v.Name, v.Namespace, v.Cluster}
 		data = append(data, strings.Join(line, " | "))
 		hosts = append(hosts, k)
 	}
