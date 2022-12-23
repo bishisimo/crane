@@ -9,10 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// getCmd represents the etcd command
-var getCmd = &cobra.Command{
-	Use:     "get",
-	Aliases: []string{"info"},
+// infoCmd represents the etcd command
+var infoCmd = &cobra.Command{
+	Use:     "info",
+	Aliases: []string{},
 	Short:   "查看指定 [kubectl context] 资源",
 	Long:    ``,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -31,6 +31,6 @@ var getCmd = &cobra.Command{
 var getOptions = new(kubectx.GetOptions)
 
 func init() {
-	ctxCmd.AddCommand(getCmd)
-	getCmd.Flags().StringVarP(&getOptions.Target, "target", "t", "", "查看指定资源的信息")
+	ctxCmd.AddCommand(infoCmd)
+	infoCmd.Flags().StringVarP(&getOptions.Target, "target", "t", "", "查看指定资源的信息")
 }

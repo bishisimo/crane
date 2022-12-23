@@ -2,8 +2,10 @@ package kubex
 
 import (
 	"context"
+	"crane/pkg/errorx"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 )
 
@@ -25,7 +27,12 @@ type Kubex struct {
 	ctx       context.Context
 	cancel    context.CancelFunc
 	RawOut    []byte
-	resources []string
+	resources []*Metadata
+}
+
+type Metadata struct {
+	Namespace string
+	Name      string
 }
 
 func NewWorker(opts *Options) *Kubex {
@@ -49,4 +56,36 @@ func (k *Kubex) process(args []string) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
+}
+
+func (k *Kubex) ParseResources() error {
+	s := strings.TrimSpace(string(k.RawOut))
+	if strings.HasPrefix(s, "No resources found") {
+		return errorx.NotFound
+	}
+	lines := strings.Split(s, "\n")[1:]
+	resources := make([]*Metadata, 0, len(lines))
+	namespaceIndex := 0
+	nameIndex := 0
+	if k.AllNamespace {
+		nameIndex = 1
+	}
+	for _, line := range lines {
+		items := strings.Fields(line)
+		meta := &Metadata{
+			Namespace: items[namespaceIndex],
+			Name:      items[nameIndex],
+		}
+		resources = append(resources, meta)
+	}
+	if k.Contains == "" {
+		k.resources = resources
+		return nil
+	}
+	for _, meta := range resources {
+		if k.Contains == "" || strings.Contains(meta.Name, k.Contains) {
+			k.resources = append(k.resources, meta)
+		}
+	}
+	return nil
 }

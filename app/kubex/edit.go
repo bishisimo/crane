@@ -9,7 +9,7 @@ func (k *Kubex) Edit() error {
 	if k.Name != "" {
 		return k.editOneByName(k.Name)
 	}
-	err := k.Get(false)
+	err := k.get()
 	if err != nil {
 		return err
 	}
@@ -45,12 +45,16 @@ func (k *Kubex) affirmEdit() (string, error) {
 		return "", errorx.NotFound
 	}
 	if len(k.resources) == 1 {
-		return k.resources[0], nil
+		return k.resources[0].Name, nil
+	}
+	data := make([]string, 0, len(k.resources))
+	for _, meta := range k.resources {
+		data = append(data, meta.Name)
 	}
 	l := list.NewList("edit option")
-	s, err := l.Select(k.resources)
+	i, err := l.Select(data)
 	if err != nil {
 		return "", err
 	}
-	return k.resources[s], nil
+	return data[i], nil
 }

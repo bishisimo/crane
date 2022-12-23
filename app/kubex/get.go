@@ -3,10 +3,53 @@ package kubex
 import (
 	"crane/pkg/errorx"
 	"fmt"
+	"github.com/rs/zerolog/log"
 	"strings"
 )
 
-func (k *Kubex) Get(show bool) error {
+func (k *Kubex) Get() error {
+	if k.AllNamespace && k.Name != "" {
+		err := k.preGetAllNamespace()
+		if errorx.IsNotFound(err) {
+			log.Info().Msg("not found")
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+	}
+	err := k.get()
+	if err != nil {
+		return err
+	}
+	return k.ShowGet()
+}
+
+func (k *Kubex) preGetAllNamespace() error {
+	args, err := NewArgument("get", k.Options).WithKind().WithNamespace().get()
+	if err != nil {
+		return err
+	}
+	rawOut, err := k.run(args)
+	if err != nil {
+		return err
+	}
+	k.RawOut = rawOut
+	err = k.ParseResources()
+	if err != nil {
+		return err
+	}
+	for _, meta := range k.resources {
+		if meta.Name == k.Name {
+			k.AllNamespace = false
+			k.Namespace = meta.Namespace
+			return nil
+		}
+	}
+	return errorx.NotFound
+}
+
+func (k *Kubex) get() error {
 	args, err := NewArgument("get", k.Options).WithKind().WithName().WithNamespace().WithOutFormat().get()
 	if err != nil {
 		return err
@@ -16,9 +59,6 @@ func (k *Kubex) Get(show bool) error {
 		return err
 	}
 	k.RawOut = rawOut
-	if show {
-		return k.ShowGet()
-	}
 	return nil
 }
 
@@ -32,24 +72,5 @@ func (k *Kubex) ShowGet() error {
 		}
 	}
 	fmt.Println(strings.Join(result, "\n"))
-	return nil
-}
-
-func (k *Kubex) ParseResources() error {
-	s := strings.TrimSpace(string(k.RawOut))
-	if strings.HasPrefix(s, "No resources found") {
-		return errorx.NotFound
-	}
-	lines := strings.Split(s, "\n")[1:]
-	resources := make([]string, 0, len(lines))
-	for _, line := range lines {
-		items := strings.Split(line, " ")
-		resources = append(resources, items[0])
-	}
-	for _, name := range resources {
-		if k.Contains == "" || strings.Contains(name, k.Contains) {
-			k.resources = append(k.resources, name)
-		}
-	}
 	return nil
 }

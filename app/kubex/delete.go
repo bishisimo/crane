@@ -11,7 +11,7 @@ func (k *Kubex) Delete() error {
 	if k.Name != "" {
 		return k.deleteOneByName(k.Name)
 	}
-	err := k.Get(false)
+	err := k.get()
 	if err != nil {
 		return err
 	}
@@ -19,12 +19,12 @@ func (k *Kubex) Delete() error {
 	if err != nil {
 		return err
 	}
-	for _, name := range k.resources {
-		if k.Contains != "" && !strings.Contains(name, k.Contains) || !k.affirmDelete(name) {
+	for _, meta := range k.resources {
+		if k.Contains != "" && !strings.Contains(meta.Name, k.Contains) || !k.affirmDelete(meta.Name) {
 			continue
 		}
 
-		err = k.deleteOneByName(name)
+		err = k.deleteOneByName(meta.Name)
 		if err != nil {
 			return err
 		}

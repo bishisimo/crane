@@ -5,15 +5,16 @@ package kubex
 
 import (
 	"crane/app/kubex"
+	"crane/pkg/errorx"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
-// getCmd represents the etcd command
-var getCmd = &cobra.Command{
-	Use:     "get",
-	Aliases: []string{"list", "ls"},
-	Short:   "kubectl 查看资源",
+// describeCmd represents the etcd command
+var describeCmd = &cobra.Command{
+	Use:     "describe",
+	Aliases: []string{"info"},
+	Short:   "kubectl 资源描述",
 	Long:    ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
@@ -26,14 +27,17 @@ var getCmd = &cobra.Command{
 			kubexOptions.Name = args[1]
 		}
 		k := kubex.NewWorker(kubexOptions)
-		err := k.Get()
+		err := k.Delete()
 		if err != nil {
-			log.Fatal().Err(err).Msg("fail")
+			if errorx.IsNotFound(err) {
+				log.Warn().Str("Kind", kubexOptions.Kind).Msg(err.Error())
+			} else {
+				log.Fatal().Err(err).Msg("fail")
+			}
 		}
 	},
 }
 
 func init() {
-	kubexCmd.AddCommand(getCmd)
-	getCmd.Flags().StringVarP(&kubexOptions.OutFormat, "out", "o", "", "指定资源输出格式")
+	kubexCmd.AddCommand(describeCmd)
 }
