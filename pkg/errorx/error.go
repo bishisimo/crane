@@ -6,6 +6,9 @@ import (
 )
 
 func errContains(err error, str string) bool {
+	if err == nil {
+		return false
+	}
 	return strings.Contains(strings.ToLower(err.Error()), strings.ToLower(str))
 }
 
