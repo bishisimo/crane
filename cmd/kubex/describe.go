@@ -5,7 +5,6 @@ package kubex
 
 import (
 	"crane/app/kubex"
-	"crane/pkg/errorx"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
@@ -27,14 +26,8 @@ var describeCmd = &cobra.Command{
 			kubexOptions.Name = args[1]
 		}
 		k := kubex.NewWorker(kubexOptions)
-		err := k.Delete()
-		if err != nil {
-			if errorx.IsNotFound(err) {
-				log.Warn().Str("Kind", kubexOptions.Kind).Msg(err.Error())
-			} else {
-				log.Fatal().Err(err).Msg("fail")
-			}
-		}
+		_ = k
+		log.Info().Msg("not support now")
 	},
 }
 
