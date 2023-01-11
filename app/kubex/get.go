@@ -78,6 +78,9 @@ func (k *Kubex) preContains() error {
 		k.Name = k.resources[0].Name
 		return nil
 	}
+	if k.OutFormat == "" {
+		return nil
+	}
 	data := make([]string, 0, len(k.resources))
 	for _, meta := range k.resources {
 		data = append(data, meta.Name)
