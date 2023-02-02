@@ -4,23 +4,12 @@ import (
 	"crane/pkg/errorx"
 	"crane/pkg/ui"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"strings"
 )
 
 func (k *Kubex) Get() error {
-	if k.AllNamespace && k.Name != "" {
-		err := k.preGetAllNamespace()
-		if errorx.IsNotFound(err) {
-			log.Info().Msg("not found")
-			return nil
-		}
-		if err != nil {
-			return err
-		}
-	}
-	if k.Contains != "" {
-		err := k.preContains()
+	if k.AllNamespace || k.Contains != "" {
+		err := k.preAllData()
 		if err != nil {
 			return err
 		}
@@ -30,6 +19,35 @@ func (k *Kubex) Get() error {
 		return err
 	}
 	return k.ShowGet()
+}
+
+func (k *Kubex) preAllData() error {
+	args, err := NewArgument("get", k.Options).WithKind().WithNamespace().get()
+	if err != nil {
+		return err
+	}
+	rawOut, err := k.run(args)
+	if err != nil {
+		return err
+	}
+	k.RawOut = rawOut
+	err = k.ParseResources()
+	if err != nil {
+		return err
+	}
+	if k.Contains != "" {
+		return k.preContains()
+	}
+	if k.Name != "" {
+		for _, meta := range k.resources {
+			if meta.Name == k.Name {
+				k.AllNamespace = false
+				k.Namespace = meta.Namespace
+				return nil
+			}
+		}
+	}
+	return nil
 }
 
 func (k *Kubex) preGetAllNamespace() error {
@@ -57,40 +75,29 @@ func (k *Kubex) preGetAllNamespace() error {
 }
 
 func (k *Kubex) preContains() error {
-	args, err := NewArgument("get", k.Options).WithKind().WithName().WithNamespace().get()
-	if err != nil {
-		return err
-	}
-	rawOut, err := k.run(args)
-	if err != nil {
-		return err
-	}
-	k.RawOut = rawOut
-	err = k.ParseResources()
-	if err != nil {
-		return err
-	}
-	if len(k.resources) == 0 {
+	switch len(k.resources) {
+	case 0:
 		return errorx.NotFound
-	}
-	if len(k.resources) == 1 {
+	case 1:
 		k.Contains = ""
+		k.AllNamespace = false
+		k.Namespace = k.resources[0].Namespace
 		k.Name = k.resources[0].Name
-		return nil
+	default:
+		if k.OutFormat == "" {
+			return nil
+		}
+		data := make([]string, 0, len(k.resources))
+		for _, meta := range k.resources {
+			data = append(data, meta.Name)
+		}
+		i, err := ui.Select(data)
+		if err != nil {
+			return err
+		}
+		k.Contains = ""
+		k.Name = data[i]
 	}
-	if k.OutFormat == "" {
-		return nil
-	}
-	data := make([]string, 0, len(k.resources))
-	for _, meta := range k.resources {
-		data = append(data, meta.Name)
-	}
-	i, err := ui.Select(data)
-	if err != nil {
-		return err
-	}
-	k.Contains = ""
-	k.Name = data[i]
 	return nil
 }
 
