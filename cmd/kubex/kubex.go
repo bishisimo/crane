@@ -31,7 +31,7 @@ func init() {
 	kubexCmd.Flags().DurationVarP(&kubexOptions.Timeout, "timeout", "t", 10*time.Second, "指定超时时间")
 	kubexCmd.Flags().BoolVarP(&kubexOptions.Affirm, "affirm", "y", false, "无需确认")
 	kubexCmd.Flags().BoolVarP(&kubexOptions.Force, "force", "f", false, "强制执行")
-	kubexCmd.Flags().BoolVarP(&kubexOptions.AllNamespace, "all", "A", false, "所以命名空间")
+	kubexCmd.Flags().BoolVarP(&kubexOptions.AllNamespace, "all", "A", false, "所有命名空间")
 
 	getCmd.Flags().AddFlagSet(kubexCmd.Flags())
 	deleteCmd.Flags().AddFlagSet(kubexCmd.Flags())

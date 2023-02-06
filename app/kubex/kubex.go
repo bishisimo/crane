@@ -73,8 +73,10 @@ func (k *Kubex) ParseResources() error {
 	for _, line := range lines {
 		items := strings.Fields(line)
 		meta := &Metadata{
-			Namespace: items[namespaceIndex],
-			Name:      items[nameIndex],
+			Name: items[nameIndex],
+		}
+		if namespaceIndex != nameIndex {
+			meta.Namespace = items[namespaceIndex]
 		}
 		resources = append(resources, meta)
 	}
@@ -82,8 +84,9 @@ func (k *Kubex) ParseResources() error {
 		k.resources = resources
 		return nil
 	}
+	k.resources = make([]*Metadata, 0, len(lines))
 	for _, meta := range resources {
-		if k.Contains == "" || strings.Contains(meta.Name, k.Contains) {
+		if strings.Contains(meta.Name, k.Contains) {
 			k.resources = append(k.resources, meta)
 		}
 	}

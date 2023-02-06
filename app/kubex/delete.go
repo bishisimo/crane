@@ -8,14 +8,10 @@ import (
 )
 
 func (k *Kubex) Delete() error {
-	if k.Name != "" {
-		return k.deleteOneByName(k.Name)
+	if k.Namespace != "" && k.Name != "" {
+		return k.deleteOneByName()
 	}
 	err := k.get()
-	if err != nil {
-		return err
-	}
-	err = k.ParseResources()
 	if err != nil {
 		return err
 	}
@@ -23,8 +19,11 @@ func (k *Kubex) Delete() error {
 		if k.Contains != "" && !strings.Contains(meta.Name, k.Contains) || !k.affirmDelete(meta.Name) {
 			continue
 		}
-
-		err = k.deleteOneByName(meta.Name)
+		if meta.Namespace != "" {
+			k.Namespace = meta.Namespace
+		}
+		k.Name = meta.Name
+		err = k.deleteOneByName()
 		if err != nil {
 			return err
 		}
@@ -32,8 +31,8 @@ func (k *Kubex) Delete() error {
 	return nil
 }
 
-func (k *Kubex) deleteOneByName(name string) error {
-	args, err := NewArgument("delete", k.Options).WithKind().WithName(name).WithNamespace().WithForce().get()
+func (k *Kubex) deleteOneByName() error {
+	args, err := NewArgument("delete", k.Options).WithKind().WithName().WithNamespace().WithForce().get()
 	if err != nil {
 		return err
 	}
