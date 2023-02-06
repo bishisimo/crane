@@ -11,7 +11,7 @@ func (k *Kubex) Delete() error {
 	if k.Namespace != "" && k.Name != "" {
 		return k.deleteOneByName()
 	}
-	err := k.get()
+	err := k.getPrecision()
 	if err != nil {
 		return err
 	}

@@ -8,7 +8,7 @@ import (
 )
 
 func (k *Kubex) Get() error {
-	err := k.get()
+	err := k.getAll()
 	if err != nil {
 		return err
 	}
@@ -102,15 +102,93 @@ func (k *Kubex) get() error {
 	return nil
 }
 
+func (k *Kubex) getAll() error {
+	args, err := NewArgument("get", k.Options).WithKind().WithName().WithNamespace().WithOutFormat().get()
+	if err != nil {
+		return err
+	}
+	rawOut, err := k.run(args)
+	if err != nil {
+		return err
+	}
+	k.RawOut = rawOut
+	if k.OutFormat != "" {
+		return nil
+	}
+	err = k.ParseResources()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (k *Kubex) getPrecision() error {
+	if k.AllNamespace || k.Contains != "" {
+		err := k.preAllData()
+		if err != nil {
+			return err
+		}
+		if k.Name == "" {
+			return nil
+		}
+	}
+	args, err := NewArgument("get", k.Options).WithKind().WithName().WithNamespace().WithOutFormat().get()
+	if err != nil {
+		return err
+	}
+	rawOut, err := k.run(args)
+	if err != nil {
+		return err
+	}
+	k.RawOut = rawOut
+	if k.OutFormat != "" {
+		return nil
+	}
+	err = k.ParseResources()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (k *Kubex) ShowGet() error {
 	s := string(k.RawOut)
 	sp := strings.Split(s, "\n")
-	result := make([]string, 0)
+	data := make([]string, 0)
 	for i, line := range sp {
 		if i == 0 || k.Contains == "" || strings.Contains(line, k.Contains) {
-			result = append(result, line)
+			data = append(data, line)
 		}
 	}
-	fmt.Println(strings.Join(result, "\n"))
+	fmt.Println(strings.Join(data, "\n"))
+	return nil
+}
+
+func (k *Kubex) ShowTable() error {
+	s := string(k.RawOut)
+	sp := strings.Split(s, "\n")
+	data := make([][]string, 0)
+	needNamespace := false
+	for i, line := range sp {
+		if i == 0 {
+			var items []string
+			if !strings.Contains(strings.ToLower(line), "namespace") {
+				needNamespace = true
+				items = append(items, "NAMESPACE")
+			}
+			items = append(items, strings.Fields(line)...)
+			data = append(data, items)
+			continue
+		}
+		if k.Contains == "" || strings.Contains(line, k.Contains) {
+			var items []string
+			if needNamespace {
+				items = append(items, k.Namespace)
+			}
+			items = append(items, strings.Fields(line)...)
+			data = append(data, items)
+		}
+	}
+	ui.Table(data)
 	return nil
 }

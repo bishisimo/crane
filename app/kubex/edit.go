@@ -9,7 +9,7 @@ func (k *Kubex) Edit() error {
 	if k.Namespace != "" && k.Name != "" {
 		return k.editOneByName()
 	}
-	err := k.get()
+	err := k.getPrecision()
 	if err != nil {
 		return err
 	}
