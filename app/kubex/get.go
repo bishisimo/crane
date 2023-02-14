@@ -8,10 +8,18 @@ import (
 )
 
 func (k *Kubex) Get() error {
-	err := k.getAll()
-	if err != nil {
-		return err
+	if k.OutFormat == "" {
+		err := k.getAll()
+		if err != nil {
+			return err
+		}
+	} else {
+		err := k.getPrecision()
+		if err != nil {
+			return err
+		}
 	}
+
 	return k.ShowGet()
 }
 
@@ -40,35 +48,6 @@ func (k *Kubex) preAllData() error {
 				return nil
 			}
 		}
-	}
-	return nil
-}
-
-func (k *Kubex) preContains() error {
-	switch len(k.resources) {
-	case 0:
-		return errorx.NotFound
-	case 1:
-		k.Contains = ""
-		k.AllNamespace = false
-		k.Name = k.resources[0].Name
-		if k.resources[0].Namespace != "" {
-			k.Namespace = k.resources[0].Namespace
-		}
-	default:
-		if k.OutFormat == "" {
-			return nil
-		}
-		data := make([]string, 0, len(k.resources))
-		for _, meta := range k.resources {
-			data = append(data, meta.Name)
-		}
-		i, err := ui.Select(data)
-		if err != nil {
-			return err
-		}
-		k.Contains = ""
-		k.Name = data[i]
 	}
 	return nil
 }
@@ -147,6 +126,35 @@ func (k *Kubex) getPrecision() error {
 	err = k.ParseResources()
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+func (k *Kubex) preContains() error {
+	switch len(k.resources) {
+	case 0:
+		return errorx.NotFound
+	case 1:
+		k.Contains = ""
+		k.AllNamespace = false
+		k.Name = k.resources[0].Name
+		if k.resources[0].Namespace != "" {
+			k.Namespace = k.resources[0].Namespace
+		}
+	default:
+		if k.OutFormat == "" {
+			return nil
+		}
+		data := make([]string, 0, len(k.resources))
+		for _, meta := range k.resources {
+			data = append(data, meta.Name)
+		}
+		i, err := ui.Select(data)
+		if err != nil {
+			return err
+		}
+		k.Contains = ""
+		k.Name = data[i]
 	}
 	return nil
 }
