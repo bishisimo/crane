@@ -5,6 +5,7 @@ package kubex
 
 import (
 	"crane/app/kubex"
+	"crane/pkg/errorx"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
@@ -27,6 +28,10 @@ var getCmd = &cobra.Command{
 		}
 		k := kubex.NewWorker(kubexOptions)
 		err := k.Get()
+		if errorx.IsNotFound(err) {
+			log.Warn().Str("Kind", kubexOptions.Kind).Msg(err.Error())
+			return
+		}
 		if err != nil {
 			log.Fatal().Err(err).Msg("fail")
 		}

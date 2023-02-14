@@ -7,11 +7,14 @@ require (
 	github.com/charmbracelet/bubbles v0.14.0
 	github.com/charmbracelet/bubbletea v0.23.0
 	github.com/charmbracelet/lipgloss v0.6.0
+	github.com/duke-git/lancet/v2 v2.1.9
+	github.com/fzdwx/infinite v0.9.0
 	github.com/gizak/termui/v3 v3.1.0
 	github.com/go-playground/locales v0.14.0
 	github.com/go-playground/universal-translator v0.18.0
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/k0kubun/pp v2.4.0+incompatible
+	github.com/olekukonko/tablewriter v0.0.5
 	github.com/pelletier/go-toml v1.9.5
 	github.com/pkg/errors v0.9.1
 	github.com/pkg/sftp v1.13.5
@@ -19,6 +22,7 @@ require (
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.14.0
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
+	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/klog/v2 v2.80.1
 )
 
@@ -26,9 +30,7 @@ require (
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52 v1.2.1 // indirect
 	github.com/containerd/console v1.0.3 // indirect
-	github.com/duke-git/lancet/v2 v2.1.9 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/fzdwx/infinite v0.9.0 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
@@ -48,7 +50,6 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.13.0 // indirect
 	github.com/nsf/termbox-go v0.0.0-20190121233118-02980233997d // indirect
-	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
 	github.com/rivo/uniseg v0.4.2 // indirect
 	github.com/rotisserie/eris v0.5.4 // indirect
@@ -63,5 +64,4 @@ require (
 	golang.org/x/text v0.5.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
