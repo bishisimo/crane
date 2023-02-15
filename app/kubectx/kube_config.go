@@ -6,44 +6,45 @@ import (
 )
 
 type KubeConfig struct {
-	ApiVersion     string         `yaml:"apiVersion"`
-	Kind           string         `yaml:"kind"`
-	CurrentContext string         `yaml:"current-context"`
-	Clusters       []*Cluster     `yaml:"clusters"`
-	Users          []*User        `yaml:"users"`
-	Contexts       []*Context     `yaml:"contexts"`
-	Preferences    map[string]any `yaml:"preferences"`
+	ApiVersion     string         `json:"apiVersion" yaml:"apiVersion"`
+	Kind           string         `json:"kind" yaml:"kind"`
+	CurrentContext string         `json:"current-context" yaml:"current-context"`
+	Clusters       []*Cluster     `json:"clusters" yaml:"clusters"`
+	Users          []*User        `json:"users" yaml:"users"`
+	Contexts       []*Context     `json:"contexts" yaml:"contexts"`
+	Preferences    map[string]any `json:"preferences" yaml:"preferences"`
 }
 
 type Cluster struct {
-	Name    string       `yaml:"name"`
-	Cluster *ClusterInfo `yaml:"cluster"`
+	Name    string       `json:"name" yaml:"name"`
+	Cluster *ClusterInfo `json:"cluster" yaml:"cluster"`
 }
 
 type ClusterInfo struct {
-	Server                   string `yaml:"server"`
-	CertificateAuthorityData string `yaml:"certificate-authority-data"`
+	Server                   string `json:"server" yaml:"server"`
+	CertificateAuthorityData string `json:"certificate-authority-data" yaml:"certificate-authority-data"`
 }
 
 type User struct {
-	Name string    `yaml:"name"`
-	User *UserInfo `yaml:"user"`
+	Name string    `json:"name" yaml:"name"`
+	User *UserInfo `json:"user" yaml:"user"`
 }
 
 type UserInfo struct {
-	ClientCertificateData string `yaml:"client-certificate-data"`
-	ClientKeyData         string `yaml:"client-key-data"`
+	ClientCertificateData string `json:"client-certificate-data" yaml:"client-certificate-data"`
+	ClientKeyData         string `json:"client-key-data" yaml:"client-key-data"`
+	Token                 string `json:"token" yaml:"token"`
 }
 
 type Context struct {
-	Name    string      `yaml:"name"`
-	Context ContextInfo `yaml:"context"`
+	Name    string      `json:"name" yaml:"name"`
+	Context ContextInfo `json:"context" yaml:"context"`
 }
 
 type ContextInfo struct {
-	Cluster   string `yaml:"cluster"`
-	User      string `yaml:"user"`
-	Namespace string `yaml:"namespace"`
+	Cluster   string `json:"cluster" yaml:"cluster"`
+	User      string `json:"user" yaml:"user"`
+	Namespace string `json:"namespace" yaml:"namespace"`
 }
 
 func LoadKubeConfig(filePath string) (*KubeConfig, error) {
