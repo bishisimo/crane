@@ -22,7 +22,7 @@ var infoCmd = &cobra.Command{
 		kc := kubectx.NewKubeCtx()
 		err := kc.Get(getOptions)
 		if err != nil {
-			log.Err(err).Send()
+			log.Warn().Err(err).Send()
 			return
 		}
 	},

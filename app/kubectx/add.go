@@ -28,6 +28,7 @@ type AddOptions struct {
 	PrivateKey string
 	SourcePath string
 	AcpUrl     string
+	Cluster    string
 	Name       string
 	Namespace  string
 }
@@ -126,7 +127,7 @@ func (c *KubeCtx) addBySftp(opts *AddOptions) error {
 }
 
 func (c *KubeCtx) addByAcp(opts *AddOptions) error {
-	configPath := "/auth/v1/clusters/ovn/kubeconfig"
+	configPath := path.Join("/auth/v1/clusters", opts.Cluster, "kubeconfig")
 	if !strings.HasPrefix(opts.AcpUrl, "https://") {
 		opts.AcpUrl = `https://` + opts.AcpUrl
 	}

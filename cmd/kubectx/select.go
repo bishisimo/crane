@@ -19,7 +19,7 @@ var selectCmd = &cobra.Command{
 		kc := kubectx.NewKubeCtx()
 		err := kc.Select()
 		if err != nil {
-			log.Err(err).Send()
+			log.Warn().Err(err).Send()
 			return
 		}
 	},

@@ -16,17 +16,21 @@ var addCmd = &cobra.Command{
 	Short:   "添加 [kubectl context] 资源",
 	Long:    ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 && addOpts.Host == "" && addOpts.AcpUrl == "" {
+		if len(args) == 0 && addOpts.Host == "" && (addOpts.AcpUrl == "" || addOpts.Cluster == "") {
 			_ = cmd.Help()
 			return
 		}
 		if len(args) > 0 && addOpts.AcpUrl == "" {
-			addOpts.ParserUri(args[0])
+			err := addOpts.ParserUri(args[0])
+			if err != nil {
+				log.Warn().Err(err).Send()
+				return
+			}
 		}
 		kc := kubectx.NewKubeCtx()
 		err := kc.Add(addOpts)
 		if err != nil {
-			log.Err(err).Send()
+			log.Warn().Err(err).Send()
 			return
 		}
 		log.Info().Msg("ok")
@@ -42,7 +46,8 @@ func init() {
 	addCmd.Flags().StringVarP(&addOpts.Username, "username", "u", "root", "the sever's user")
 	addCmd.Flags().StringVarP(&addOpts.Password, "password", "p", "", "the sever's password")
 	addCmd.Flags().StringVarP(&addOpts.PrivateKey, "key", "k", "", "the sever's key")
-	addCmd.Flags().StringVarP(&addOpts.AcpUrl, "acp", "", "", "the sever's url for acp")
+	addCmd.Flags().StringVarP(&addOpts.AcpUrl, "acp", "", "", "the domain url for acp, also need cluster")
+	addCmd.Flags().StringVarP(&addOpts.Cluster, "cluster", "", "", "the cluster name for acp, also need acp")
 	addCmd.Flags().StringVarP(&addOpts.Name, "name", "n", "", "rename the nameof this context")
 	addCmd.Flags().StringVarP(&addOpts.Namespace, "namespace", "N", "", "reset the namespace of this context")
 }

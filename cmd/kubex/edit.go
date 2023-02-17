@@ -29,11 +29,11 @@ var editCmd = &cobra.Command{
 		k := kubex.NewWorker(kubexOptions)
 		err := k.Edit()
 		if errorx.IsNotFound(err) || errorx.IsCanceled(err) {
-			log.Warn().Str("Kind", kubexOptions.Kind).Msg(err.Error())
+			log.Warn().Err(err).Str("Kind", kubexOptions.Kind).Send()
 			return
 		}
 		if err != nil {
-			log.Fatal().Err(err).Msg("fail")
+			log.Warn().Err(err).Send()
 		}
 	},
 }

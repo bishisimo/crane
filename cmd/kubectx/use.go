@@ -26,7 +26,7 @@ var useCmd = &cobra.Command{
 		kc := kubectx.NewKubeCtx()
 		err := kc.Use(useOptions)
 		if err != nil {
-			log.Err(err).Send()
+			log.Warn().Err(err).Send()
 			return
 		}
 	},

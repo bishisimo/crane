@@ -27,7 +27,7 @@ var describeCmd = &cobra.Command{
 		}
 		k := kubex.NewWorker(kubexOptions)
 		_ = k
-		log.Info().Msg("not support now")
+		log.Warn().Msg("not support now")
 	},
 }
 

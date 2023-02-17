@@ -5,6 +5,7 @@ package kubectx
 
 import (
 	"crane/app/kubectx"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
 
@@ -18,6 +19,7 @@ var listCmd = &cobra.Command{
 		kc := kubectx.NewKubeCtx()
 		err := kc.List()
 		if err != nil {
+			log.Warn().Err(err).Send()
 			return
 		}
 	},

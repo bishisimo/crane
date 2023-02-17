@@ -29,11 +29,11 @@ var deleteCmd = &cobra.Command{
 		k := kubex.NewWorker(kubexOptions)
 		err := k.Delete()
 		if errorx.IsNotFound(err) {
-			log.Warn().Str("Kind", kubexOptions.Kind).Msg(err.Error())
+			log.Warn().Err(err).Str("Kind", kubexOptions.Kind).Send()
 			return
 		}
 		if err != nil {
-			log.Fatal().Err(err).Msg("fail")
+			log.Warn().Err(err).Send()
 		}
 	},
 }

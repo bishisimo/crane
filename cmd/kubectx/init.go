@@ -19,7 +19,7 @@ var initCmd = &cobra.Command{
 		kc := kubectx.NewKubeCtx()
 		err := kc.InitMainConfig()
 		if err != nil {
-			log.Err(err).Send()
+			log.Warn().Err(err).Send()
 			return
 		}
 	},
