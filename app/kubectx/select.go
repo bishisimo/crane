@@ -2,30 +2,38 @@ package kubectx
 
 import (
 	"crane/pkg/ui"
+	"sort"
 	"strings"
 )
 
 func (c *KubeCtx) Select() error {
-	data := make([]string, 0, len(c.metadata.Contexts))
-	hosts := make([]string, 0, len(c.metadata.Contexts))
+	data := make([]string, 1, len(c.metadata.Contexts))
+	selectMap := make(map[string]string, len(c.metadata.Contexts))
 	for k, v := range c.metadata.Contexts {
 		flag := "  "
 		if k == c.metadata.Current {
 			flag = "🔥"
 		}
 		line := []string{flag, k, v.Name, v.Namespace, v.Cluster}
-		data = append(data, strings.Join(line, " | "))
-		hosts = append(hosts, k)
+		showInfo := strings.Join(line, " | ")
+		if k == c.metadata.Current {
+			data[0] = showInfo
+		} else {
+			data = append(data, showInfo)
+		}
+		selectMap[showInfo] = k
 	}
+	sort.Strings(data[1:])
 	i, err := ui.Select(data)
 	if err != nil {
 		return err
 	}
-	err = c.useFile(hosts[i])
+	host := selectMap[data[i]]
+	err = c.useFile(host)
 	if err != nil {
 		return err
 	}
-	c.metadata.Current = hosts[i]
+	c.metadata.Current = host
 	err = c.StoreMetadata()
 	if err != nil {
 		return err
