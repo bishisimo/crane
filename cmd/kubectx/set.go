@@ -33,6 +33,6 @@ var setOptions = new(kubectx.SetOptions)
 func init() {
 	ctxCmd.AddCommand(setCmd)
 	setCmd.Flags().StringVarP(&setOptions.Target, "target", "t", "", "指定context资源")
-	setCmd.Flags().StringVarP(&setOptions.Name, "name", "n", "", "设置名称")
-	setCmd.Flags().StringVarP(&setOptions.Namespace, "namespace", "N", "", "设置默认命名空间")
+	setCmd.Flags().StringVarP(&setOptions.Name, "name", "", "", "设置名称")
+	setCmd.Flags().StringVarP(&setOptions.Namespace, "namespace", "n", "", "设置默认命名空间")
 }

@@ -5,6 +5,7 @@ import (
 	"crane/pkg/sshx"
 	"crane/pkg/ui"
 	"crane/util"
+	"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -31,6 +32,7 @@ type AddOptions struct {
 	Cluster    string
 	Name       string
 	Namespace  string
+	token      string
 }
 
 func (o *AddOptions) ParserUri(uri string) error {
@@ -127,15 +129,19 @@ func (c *KubeCtx) addBySftp(opts *AddOptions) error {
 }
 
 func (c *KubeCtx) addByAcp(opts *AddOptions) error {
-	configPath := path.Join("/auth/v1/clusters", opts.Cluster, "kubeconfig")
 	if !strings.HasPrefix(opts.AcpUrl, "https://") {
 		opts.AcpUrl = `https://` + opts.AcpUrl
 	}
+	opts.token = ui.Input("input token:")
+	err := c.ensureCluster(opts)
+	if err != nil {
+		return err
+	}
+	configPath := path.Join("/auth/v1/clusters", opts.Cluster, "kubeconfig")
 	configUrl := opts.AcpUrl + configPath
-	token := ui.Input("input token:")
-	client := resty.New()
+	client := resty.New().SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
 	resp, err := client.R().
-		SetAuthToken(token).
+		SetAuthToken(opts.token).
 		Get(configUrl)
 	if err != nil {
 		return err
@@ -190,7 +196,10 @@ func (c *KubeCtx) addByAcp(opts *AddOptions) error {
 		return err
 	}
 	defer f.Close()
-	f.Write(yData)
+	_, err = f.Write(yData)
+	if err != nil {
+		return err
+	}
 	err = c.AddMetadata(targetPath)
 	if err != nil {
 		return err
@@ -207,4 +216,46 @@ func (c *KubeCtx) addByAcp(opts *AddOptions) error {
 		}
 	}
 	return nil
+}
+
+func (c *KubeCtx) ensureCluster(opts *AddOptions) error {
+	if opts.Cluster != "" {
+		return nil
+	}
+	clustersUrl := opts.AcpUrl + "/v1/query/list"
+	body := map[string]any{"query": map[string]any{
+		"apiVersion": "cluster.alauda.io/v1alpha1",
+		"kind":       "ClusterModule",
+		"limit":      -1,
+	}}
+	client := resty.New().SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true})
+	resp, err := client.R().
+		SetAuthToken(opts.token).
+		SetBody(body).
+		Post(clustersUrl)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode() != http.StatusOK {
+		return errors.New("fetch cluster url fail")
+	}
+	ci := new(ClusterItems)
+	err = json.Unmarshal(resp.Body(), ci)
+	if err != nil {
+		return err
+	}
+	clusterList := make([]string, 0, len(ci.Items))
+	for _, item := range ci.Items {
+		clusterList = append(clusterList, item["metadata"].(map[string]any)["name"].(string))
+	}
+	i, err := ui.Select(clusterList)
+	if err != nil {
+		return err
+	}
+	opts.Cluster = clusterList[i]
+	return nil
+}
+
+type ClusterItems struct {
+	Items []map[string]any `json:"items"`
 }

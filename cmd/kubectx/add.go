@@ -16,7 +16,7 @@ var addCmd = &cobra.Command{
 	Short:   "添加 [kubectl context] 资源",
 	Long:    ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 && addOpts.Host == "" && (addOpts.AcpUrl == "" || addOpts.Cluster == "") {
+		if len(args) == 0 && addOpts.Host == "" && addOpts.AcpUrl == "" {
 			_ = cmd.Help()
 			return
 		}
@@ -48,6 +48,6 @@ func init() {
 	addCmd.Flags().StringVarP(&addOpts.PrivateKey, "key", "k", "", "the sever's key")
 	addCmd.Flags().StringVarP(&addOpts.AcpUrl, "acp", "", "", "the domain url for acp, also need cluster")
 	addCmd.Flags().StringVarP(&addOpts.Cluster, "cluster", "", "", "the cluster name for acp, also need acp")
-	addCmd.Flags().StringVarP(&addOpts.Name, "name", "n", "", "rename the nameof this context")
-	addCmd.Flags().StringVarP(&addOpts.Namespace, "namespace", "N", "", "reset the namespace of this context")
+	addCmd.Flags().StringVarP(&addOpts.Name, "name", "", "", "rename the nameof this context")
+	addCmd.Flags().StringVarP(&addOpts.Namespace, "namespace", "n", "", "reset the namespace of this context")
 }
