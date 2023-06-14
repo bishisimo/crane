@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// setCmd represents the etcd command
+// setCmd represents the set command
 var setCmd = &cobra.Command{
 	Use:     "set",
 	Aliases: []string{"edit", "e"},

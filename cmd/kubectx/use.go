@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// useCmd represents the etcd command
+// useCmd represents the use command
 var useCmd = &cobra.Command{
 	Use:     "use",
 	Aliases: []string{"set"},

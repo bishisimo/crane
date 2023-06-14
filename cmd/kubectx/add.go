@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// addCmd represents the etcd command
+// addCmd represents the add command
 var addCmd = &cobra.Command{
 	Use:     "add",
 	Aliases: []string{"install"},

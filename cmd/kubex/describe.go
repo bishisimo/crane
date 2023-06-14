@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// describeCmd represents the etcd command
+// describeCmd represents the describe command
 var describeCmd = &cobra.Command{
 	Use:     "describe",
 	Aliases: []string{"info"},

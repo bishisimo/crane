@@ -9,7 +9,7 @@ import (
 
 var Cmd = ctxCmd
 
-// ctxCmd represents the etcd command
+// ctxCmd represents the ctx command
 var ctxCmd = &cobra.Command{
 	Use: "context",
 	Aliases: []string{

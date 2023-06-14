@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// deleteCmd represents the etcd command
+// deleteCmd represents the delete command
 var deleteCmd = &cobra.Command{
 	Use:     "delete",
 	Aliases: []string{"remove", "rm"},

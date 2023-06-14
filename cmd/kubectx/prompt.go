@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// promptCmd represents the etcd command
+// promptCmd represents the prompt command
 var promptCmd = &cobra.Command{
 	Use:     "prompt",
 	Aliases: []string{},

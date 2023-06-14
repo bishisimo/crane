@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// editCmd represents the etcd command
+// editCmd represents the edit command
 var editCmd = &cobra.Command{
 	Use:     "edit",
 	Aliases: []string{"e"},

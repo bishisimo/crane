@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// getCmd represents the etcd command
+// getCmd represents the get command
 var getCmd = &cobra.Command{
 	Use:     "get",
 	Aliases: []string{"list", "ls"},

@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// selectCmd represents the etcd command
+// selectCmd represents the select command
 var selectCmd = &cobra.Command{
 	Use:     "select",
 	Aliases: []string{"s"},

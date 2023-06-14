@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// restoreCmd represents the etcd command
+// restoreCmd represents the restore command
 var restoreCmd = &cobra.Command{
 	Use:     "restore",
 	Aliases: []string{""},
