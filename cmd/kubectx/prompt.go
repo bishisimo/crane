@@ -13,7 +13,7 @@ import (
 var promptCmd = &cobra.Command{
 	Use:     "prompt",
 	Aliases: []string{},
-	Short:   "查看指定 [kubectl context] 资源",
+	Short:   "获取当前 [kubectl context] 的prompt信息,用于配置shell提示",
 	Long:    ``,
 	Run: func(cmd *cobra.Command, args []string) {
 		kc := kubectx.NewKubeCtx()
